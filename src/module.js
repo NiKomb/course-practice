@@ -1,7 +1,7 @@
 console.log('Hello from Module')
 
 async function start() {
-  await Promise.resolve()
+  return await Promise.resolve('Async is alive!!!')
 }
 
-start()
+start().then(console.log)

@@ -4,13 +4,21 @@ const HTMLWebpackPlugin = require('html-webpack-plugin')
 const CopyPlugin = require('copy-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 
+const isProd = process.env.NODE_ENV === 'production'
+const isDev = !isProd
+
+// для унификации кода модулей изменяем название файлов исходя из режима сборки и расширения файла
+const filename = ext => isDev ? `bundle.${ext}` : `bundle.[hash].${ext}`
+
+console.log('IS PROD:', isProd)
+console.log('IS DEV:', isDev)
 
 module.exports = {
   context: path.resolve(__dirname, 'src'),
   mode: 'development',
-  entry: './index.js',
+  entry: ['@babel/polyfill', './index.js'],
   output: {
-    filename: 'bundle.[hash].js',
+    filename: filename('js'),
     path: path.resolve(__dirname, 'dist')
   },
   resolve: {
@@ -20,11 +28,22 @@ module.exports = {
       '@core': path.resolve(__dirname, 'src/core'),
     }
   },
+  //для расшифровки кода при отладке в браузере
+  devtool: isDev ? 'source-map' : false,
+  devServer: {
+    port: 3000,
+    hot: isDev
+  },
   plugins: [
     new CleanWebpackPlugin(),
     new HTMLWebpackPlugin({
       //откуда будет шаблон для генерации index
-      template: 'index.html'
+      template: 'index.html',
+      // сжатие html для прода
+      minify: {
+        removeComments: isProd,
+        collapseWhitespace: isProd
+      }
     }),
     new CopyPlugin([
       {
@@ -33,7 +52,7 @@ module.exports = {
       },
     ]),
     new MiniCssExtractPlugin({
-      filename: 'bundle.[hash].css',
+      filename: filename('css'),
       chunkFilename: '[id].css',
       ignoreOrder: false,
     }),
@@ -43,7 +62,13 @@ module.exports = {
       {
         test: /\.s[ac]ss$/i,
         use: [
-          MiniCssExtractPlugin.loader,
+          {
+            loader: MiniCssExtractPlugin.loader,
+            options: {
+              hmr: isDev,
+              reloadAll: true
+            }
+          },
           // Translates CSS into CommonJS
           'css-loader',
           // Compiles Sass to CSS
