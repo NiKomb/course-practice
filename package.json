@@ -36,7 +36,6 @@
     "eslint": "^7.0.0",
     "eslint-config-google": "^0.14.0",
     "eslint-loader": "^4.0.2",
-    "eslint-plugin-fsd": "^1.0.1",
     "html-webpack-plugin": "^4.3.0",
     "mini-css-extract-plugin": "^0.9.0",
     "node-sass": "^4.14.1",
