@@ -10,8 +10,22 @@ const isDev = !isProd
 // для унификации кода модулей изменяем название файлов исходя из режима сборки и расширения файла
 const filename = ext => isDev ? `bundle.${ext}` : `bundle.[hash].${ext}`
 
-console.log('IS PROD:', isProd)
-console.log('IS DEV:', isDev)
+const jsLoaders = () => {
+  const loaders = [
+    {
+      loader: 'babel-loader',
+      options: {
+        presets: ['@babel/preset-env']
+      }
+    }
+  ]
+
+  if (isDev) {
+    loaders.push('eslint-loader')
+  }
+
+  return loaders
+}
 
 module.exports = {
   context: path.resolve(__dirname, 'src'),
@@ -28,7 +42,7 @@ module.exports = {
       '@core': path.resolve(__dirname, 'src/core'),
     }
   },
-  //для расшифровки кода при отладке в браузере
+  // для расшифровки кода при отладке в браузере
   devtool: isDev ? 'source-map' : false,
   devServer: {
     port: 3000,
@@ -37,7 +51,7 @@ module.exports = {
   plugins: [
     new CleanWebpackPlugin(),
     new HTMLWebpackPlugin({
-      //откуда будет шаблон для генерации index
+      // откуда будет шаблон для генерации index
       template: 'index.html',
       // сжатие html для прода
       minify: {
@@ -73,17 +87,12 @@ module.exports = {
           'css-loader',
           // Compiles Sass to CSS
           'sass-loader',
-        ],
+        ]
       },
       {
         test: /\.js$/,
         exclude: /node_modules/,
-        loader: {
-          loader: 'babel-loader',
-          options: {
-            presets: ['@babel/preset-env']
-          }
-        }
+        use: jsLoaders()
       }
     ],
   },
