@@ -1,0 +1,30 @@
+{
+  "parser": "babel-eslint",
+  "env": {
+    "es6": true,
+    "browser": true,
+    "node": true
+  },
+  "rules": {
+    "semi": "off",
+    "arrow-parens": "off",
+    "linebreak-style": "off",
+    "comma-dangle": "off",
+    "object-curly-spacing": "off",
+    "max-len": "warn",
+    "require-jsdoc": "off",
+    "fsd/hof-name-prefix": "error",
+    "fsd/no-heavy-constructor": "error",
+    "fsd/jq-cache-dom-elements": "error",
+    "fsd/jq-use-js-prefix-in-selector": "error",
+    "fsd/no-function-declaration-in-event-listener": "error",
+    "fsd/split-conditionals": "error"
+  },
+  "extends": [
+    "eslint:recommended",
+    "google"
+  ],
+  "plugins": [
+    "fsd"
+  ]
+}
